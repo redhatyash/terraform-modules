@@ -46,7 +46,7 @@ resource "aws_vpc" "this" {
 }
 resource "aws_security_group" "this" {
   name   = "${var.name}-sg"
-  vpc_id = var.vpc_id
+  vpc_id = aws_vpc.this.id
 
   ingress {
     from_port   = 22
@@ -65,8 +65,8 @@ resource "aws_security_group" "this" {
   tags = var.tags
 }
 resource "aws_flow_log" "example" {
-  iam_role_arn    = "arn"
-  log_destination = "log"
+  iam_role_arn    = "arn:aws:iam::123456789012:role/VPCFlowLogsRole"
+  log_destination = "arn:aws:logs:ap-south-1:123456789012:log-group:flowlogs"
   traffic_type    = "ALL"
   vpc_id          = aws_vpc.this.id
 }
