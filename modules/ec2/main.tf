@@ -39,17 +39,18 @@ variable "tags" {
 }
 
 resource "aws_instance" "this" {
-  ami           = var.ami
-  instance_type = var.instance_type
-  subnet_id     = var.subnet_id
-  ebs_optimized = true
-  monitoring = true
-  iam_instance_profile = "test"
+  ami                  = var.ami
+  instance_type        = var.instance_type
+  subnet_id            = var.subnet_id
+  ebs_optimized        = true
+  monitoring           = true
+  iam_instance_profile = var.iam_instance_profile
 
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "required"
-    }
+  }
+
   tags = merge(
     {
       Name = var.name
