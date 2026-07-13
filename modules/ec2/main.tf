@@ -43,11 +43,12 @@ variable "iam_instance_profile" {
   default     = null
 }
 resource "aws_security_group" "this" {
-  name   = "${var.name}-sg"
+  name        = "${var.name}-sg"
   description = "Security group for ${var.name}"
-  vpc_id = aws_vpc.this.id
+  vpc_id      = aws_vpc.this.id
 
   ingress {
+    description = "Allow SSH from internal network"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -56,11 +57,9 @@ resource "aws_security_group" "this" {
 
   egress {
     description = "Allow HTTPS outbound"
-  
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-  
     cidr_blocks = ["0.0.0.0/0"]
   }
 
