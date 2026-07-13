@@ -36,6 +36,19 @@ variable "tags" {
 resource "aws_vpc" "this" {
   cidr_block           = var.cidr_block
   enable_dns_hostnames = var.enable_dns_hostnames
+   ingress {
+    protocol  = "-1"
+    self      = true
+    from_port = 0
+    to_port   = 0
+  }
+
+   egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   tags = merge(
     {
@@ -43,6 +56,13 @@ resource "aws_vpc" "this" {
     },
     var.tags
   )
+}
+
+resource "aws_flow_log" "example" {
+  iam_role_arn    = "arn"
+  log_destination = "log"
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.this.id
 }
 
 output "vpc_id" {
