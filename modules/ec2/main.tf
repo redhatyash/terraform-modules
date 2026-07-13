@@ -37,7 +37,11 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
+variable "iam_instance_profile" {
+  description = "IAM Instance Profile"
+  type        = string
+  default     = null
+}
 resource "aws_instance" "this" {
   ami                  = var.ami
   instance_type        = var.instance_type
