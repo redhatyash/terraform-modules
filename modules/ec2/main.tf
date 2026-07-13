@@ -26,7 +26,10 @@ variable "ami" {
   type        = string
   default     = "ami-0c02fb55956c7d316"
 }
-
+variable "vpc_id" {
+  description = "VPC ID where the security group will be created"
+  type        = string
+}
 variable "subnet_id" {
   description = "Subnet ID where the EC2 instance should be launched"
   type        = string
@@ -42,17 +45,21 @@ variable "iam_instance_profile" {
   type        = string
   default     = null
 }
+variable "ssh_cidr_blocks" {
+  type    = list(string)
+  default = ["10.0.0.0/16"]
+}
 resource "aws_security_group" "this" {
   name        = "${var.name}-sg"
   description = "Security group for ${var.name}"
-  vpc_id      = aws_vpc.this.id
+  vpc_id      = var.vpc_id
 
   ingress {
     description = "Allow SSH from internal network"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = var.ssh_cidr_blocks
   }
 
   egress {
