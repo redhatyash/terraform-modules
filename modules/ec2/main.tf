@@ -42,6 +42,30 @@ variable "iam_instance_profile" {
   type        = string
   default     = null
 }
+resource "aws_security_group" "this" {
+  name   = "${var.name}-sg"
+  description = "Security group for ${var.name}"
+  vpc_id = aws_vpc.this.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  egress {
+    description = "Allow HTTPS outbound"
+  
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+  
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = var.tags
+}
 resource "aws_instance" "this" {
   ami                  = var.ami
   instance_type        = var.instance_type
@@ -49,6 +73,9 @@ resource "aws_instance" "this" {
   ebs_optimized        = true
   monitoring           = true
   iam_instance_profile = var.iam_instance_profile
+  vpc_security_group_ids = [
+    aws_security_group.this.id
+  ]
 
   metadata_options {
     http_endpoint = "enabled"
