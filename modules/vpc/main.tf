@@ -36,11 +36,23 @@ variable "tags" {
 resource "aws_vpc" "this" {
   cidr_block           = var.cidr_block
   enable_dns_hostnames = var.enable_dns_hostnames
+
+  tags = merge(
+    {
+      Name = var.name
+    },
+    var.tags
+  )
+}
+resource "aws_security_group" "this" {
+  name   = "${var.name}-sg"
+  vpc_id = var.vpc_id
+
   ingress {
-    protocol  = "-1"
-    self      = true
-    from_port = 0
-    to_port   = 0
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
   }
 
   egress {
@@ -50,14 +62,8 @@ resource "aws_vpc" "this" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(
-    {
-      Name = var.name
-    },
-    var.tags
-  )
+  tags = var.tags
 }
-
 resource "aws_flow_log" "example" {
   iam_role_arn    = "arn"
   log_destination = "log"
