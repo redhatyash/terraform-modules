@@ -36,14 +36,14 @@ variable "tags" {
 resource "aws_vpc" "this" {
   cidr_block           = var.cidr_block
   enable_dns_hostnames = var.enable_dns_hostnames
-   ingress {
+  ingress {
     protocol  = "-1"
     self      = true
     from_port = 0
     to_port   = 0
   }
 
-   egress {
+  egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
